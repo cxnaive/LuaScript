@@ -31,10 +31,50 @@
           <version>1.15.2-R0.1-SNAPSHOT</version>
           <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.luaj</groupId>
+      <artifactId>luaj-jse</artifactId>
+      <version>3.0.1</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.luaj/luaj-jse -->
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>1.4.200</version>
+    </dependency>
   </dependencies>
 
 
   <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <!-- get all project dependencies -->
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+          <!--MainClass in mainfest make a executable jar
+          <archive>
+            <manifest>
+              <mainClass>cxmc.LuaTest</mainClass>
+            </manifest>
+          </archive>>-->
+  
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <!-- bind to the packaging phase -->
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
     <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
     <resources>
       <resource>
