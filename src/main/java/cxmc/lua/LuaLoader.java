@@ -2,11 +2,14 @@ package cxmc.lua;
 
 import cxmc.*;
 import cxmc.essentials.*;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
 import org.luaj.vm2.Globals;
+import org.luaj.vm2.lib.PackageLib.preload_searcher;
 import org.luaj.vm2.lib.jse.JsePlatform;
 
 public class LuaLoader {
@@ -62,14 +65,58 @@ public class LuaLoader {
             return null;
         }
     }
-    public String GetScriptContent(String SID){
-        return instance.getH2Manager().GetScriptBySID(SID);
+    public void ClearArea(){
+        List<Pair<String,String>> areas = GetAreaALL();
+        List<String> AreaIDs = new ArrayList<>();
+        for(Pair<String,String> v:areas){
+            AreaIDs.add(v.getKey());
+        }
+        RefreshScriptArea(AreaIDs);
+        RefreshVarsArea(AreaIDs);
+        instance.getH2Manager().ClearArea();
     }
-    public List<String> GetAreaBySID(String SID){
-        return instance.getH2Manager().GetAreaBySID(SID);
+    public void ClearPos(){
+        List<Pair<ScriptPos,String>> now = GetPosALL();
+        List<ScriptPos> poses = new ArrayList<>();
+        for(Pair<ScriptPos,String> v:now){
+            poses.add(v.getKey());
+        }
+        RefreshScriptPos(poses);
+        RefreshVarsPos(poses);
+        instance.getH2Manager().ClearPos();
     }
-    public List<ScriptPos> GetPosBySID(String SID){
-        return instance.getH2Manager().GetPosBySID(SID);
+    public void ClearScript(){
+        ClearArea();
+        ClearPos();
+        instance.getH2Manager().ClearScript();
+    }
+    public void DeleteArea(String AreaID){
+        RefreshScriptArea(AreaID);
+        RefreshVarsArea(AreaID);
+        instance.getH2Manager().DeleteArea(AreaID);
+    }
+    public void DeletePos(ScriptPos pos){
+        RefreshScriptPos(pos);
+        RefreshVarsPos(pos);
+        instance.getH2Manager().DeletePos(pos);
+    }
+    public void DeleteScript(String ScriptID){
+        if(instance.getH2Manager().HasScript(ScriptID)){
+            List<ScriptPos> AffectedPoses = GetPosBySID(ScriptID);
+            List<String> AffectedAreas = GetAreaBySID(ScriptID);
+            RefreshScriptArea(AffectedAreas);
+            RefreshScriptPos(AffectedPoses);
+            instance.getH2Manager().DeleteScript(ScriptID);
+        }
+    }
+    public String GetScriptContent(String ScriptID){
+        return instance.getH2Manager().GetScriptBySID(ScriptID);
+    }
+    public List<String> GetAreaBySID(String ScriptID){
+        return instance.getH2Manager().GetAreaBySID(ScriptID);
+    }
+    public List<ScriptPos> GetPosBySID(String ScriptID){
+        return instance.getH2Manager().GetPosBySID(ScriptID);
     }
     public List<Pair<String,String>> GetAreaALL(){
         return instance.getH2Manager().GetAreaALL();

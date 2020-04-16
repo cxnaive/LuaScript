@@ -147,6 +147,30 @@ class luatest implements PluginDef{
                     System.out.println(content);
                 }
             }
+            else if(op.equals("del")){
+                String op1 = sc.next();
+                if(op1.equals("pos")){
+                    int x = sc.nextInt(),y = sc.nextInt(),z = sc.nextInt();
+                    lualoader.DeletePos(new ScriptPos(x, y, z));
+                }
+                else if(op1.equals("area")){
+                    String AreaID = sc.next();
+                    lualoader.DeleteArea(AreaID);
+                }
+                else if(op1.equals("script")){
+                    String ScriptID = sc.next();
+                    lualoader.DeleteScript(ScriptID);
+                }
+                else if(op1.equals("allpos")){
+                    lualoader.ClearPos();
+                }
+                else if(op1.equals("allscript")){
+                    lualoader.ClearScript();
+                }
+                else if(op1.equals("allarea")){
+                    lualoader.ClearArea();
+                }
+            }
             else if(op.equals("showrun")){
                 Set<String> ids = luarunner.RunningIDs();
                 for(String id:ids){

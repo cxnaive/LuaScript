@@ -41,6 +41,7 @@ public class H2Manager {
                             GET_POS_ALL,GET_AREA_ALL,GET_SID_ALL,GET_SCRIPT_BY_SID;
     private PreparedStatement UPD_SCRIPT,UPD_POS_VAR,UPD_AREA_VAR,UPD_POS,UPD_AREA;
     private PreparedStatement DEL_SCRIPT,DEL_POS,DEL_AREA;
+    private PreparedStatement CLS_POS,CLS_AREA,CLS_SCRIPT;
     private final String USER;
     private final String PASSWORD;
     private final String PATH;
@@ -99,6 +100,9 @@ public class H2Manager {
             DEL_POS = conn.prepareStatement("DELETE FROM "+POS_STRING+" WHERE X = ? AND Y = ? AND Z = ?");
             DEL_AREA = conn.prepareStatement("DELETE FROM "+AREA_STRING+" WHERE ID = ?");
             
+            CLS_AREA = conn.prepareStatement("DELETE FROM "+AREA_STRING);
+            CLS_POS = conn.prepareStatement("DELETE FROM "+POS_STRING);
+            CLS_SCRIPT = conn.prepareStatement("DELETE FROM "+SCRIPT_STRING);
             return true;
         } catch (final Exception ex) {
             System.out.println(ex.getMessage());
@@ -140,9 +144,42 @@ public class H2Manager {
             DEL_POS.close();
             DEL_AREA.close();
             
+            CLS_SCRIPT.close();
+            CLS_POS.close();
+            CLS_AREA.close();
             conn.close();
         } catch (final Exception ex) {
             System.out.println(ex.getMessage());
+        }
+    }
+
+    public boolean ClearScript(){
+        try{
+            CLS_SCRIPT.executeUpdate();
+            return true;
+        } catch (final Exception ex){
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean ClearPos(){
+        try{
+            CLS_POS.executeUpdate();
+            return true;
+        } catch (final Exception ex){
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean ClearArea(){
+        try{
+            CLS_AREA.executeUpdate();
+            return true;
+        } catch (final Exception ex){
+            ex.printStackTrace();
+            return false;
         }
     }
 
@@ -251,7 +288,8 @@ public class H2Manager {
             return null;
         }
     }
-
+    
+    @SuppressWarnings("unchecked")
     private HashMap<String,Object> Blob2Map(Blob inBlob) throws Exception{
         InputStream is = inBlob.getBinaryStream();
         BufferedInputStream bis = new BufferedInputStream(is);
