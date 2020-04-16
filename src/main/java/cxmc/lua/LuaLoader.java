@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import org.luaj.vm2.Globals;
-import org.luaj.vm2.lib.PackageLib.preload_searcher;
 import org.luaj.vm2.lib.jse.JsePlatform;
 
 public class LuaLoader {
