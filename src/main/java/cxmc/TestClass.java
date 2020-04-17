@@ -193,6 +193,7 @@ class luatest implements PluginDef{
         h2Manager.CloseConnect();
     }
 }
+
 public class TestClass{
     public static void main(String args[]){
         luatest now = new luatest();
@@ -200,4 +201,4 @@ public class TestClass{
         now.test();
         now.end();
     }
-} 
+}
