@@ -11,4 +11,5 @@ public interface PluginDef {
     public LuaLoader getLuaLoader();
     public H2Manager getH2Manager();
     public FileLoader getFileLoader();
+    public String getVersion();
 }

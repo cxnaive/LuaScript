@@ -192,6 +192,11 @@ class luatest implements PluginDef{
         luarunner.close();
         h2Manager.CloseConnect();
     }
+
+    @Override
+    public String getVersion() {
+        return "test";
+    }
 }
 
 public class TestClass{
