@@ -1,10 +1,30 @@
 main: cxmc.LuaScript
 name: LuaScript
 version: 1.0
-
+author: cx
+website: cxspace.org
+softdepend: [Vault]
 commands:
-   luas:
+   luascript:
       description: This is the luas root command.
-      usage: /luas
-      permission: <plugin name>.info
-      permission-message: You don't have <permission>
+      usage: /luascript [others]
+      aliases: luas
+      permission: luascript.info
+      permission-message: You don't have the permission luascript.info
+permissions:
+   luascript.info:
+      description: Allows luascript info command
+      default: true
+   luascript.getmode:
+      description: Allows luascript getmode command
+      default: true
+   luascript.setmode:
+      description: Allows luascript setmode command
+      default: op
+   luascript.*:
+      description: Wildcard permission
+      default: op
+      children:
+         luascript.info: true
+         luascript.getmode: true
+         luascript.setmode: true

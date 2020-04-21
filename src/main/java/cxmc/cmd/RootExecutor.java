@@ -11,6 +11,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
 import cxmc.LuaScript;
+import cxmc.text.TextBuilder;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.TextComponent;
 
 public class RootExecutor extends LuaScriptExecutor implements TabCompleter,CommandExecutor {
 
@@ -39,7 +43,12 @@ public class RootExecutor extends LuaScriptExecutor implements TabCompleter,Comm
 
     @Override
     public boolean RunAsLeaf(CommandSender sender, String[] args) {
-        sender.sendMessage("LuaScript V"+instance.getVersion());
+        sender.spigot().sendMessage(TextBuilder.of("LuaScript ")
+                                        .setColor(ChatColor.AQUA)
+                                        .append(TextBuilder.of("V"+instance.getVersion())
+                                            .setColor(ChatColor.YELLOW)
+                                            .build())
+                                        .build());
         return true;
     }
 }

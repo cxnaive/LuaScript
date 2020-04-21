@@ -8,13 +8,25 @@ import java.util.Set;
 
 import org.bukkit.command.CommandSender;
 
+import cxmc.text.TextBuilder;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.TextComponent;
+
 public abstract class LuaScriptExecutor{
     HashMap<String,LuaScriptExecutor> SubCommands;
     List<String> TabCompleteStrings;
+    String permission;
 
+    public static final TextComponent PlayerErr = TextBuilder.of("You need to specify an online player!").setColor(ChatColor.RED).build();
+    public static final TextComponent ArgNumErr = TextBuilder.of("Invalid argument number.").setColor(ChatColor.RED).build();
+    public static final TextComponent Success = TextBuilder.of("Success!").setColor(ChatColor.GREEN).build();
     public LuaScriptExecutor(){
         SubCommands = new HashMap<>();
         TabCompleteStrings = new ArrayList<>();
+        this.permission = null;
+    }
+    public void SetPermission(String permission){
+        this.permission = permission;
     }
     public void RegisterSubcommand(String name,LuaScriptExecutor executor){
         SubCommands.put(name, executor);
@@ -47,8 +59,12 @@ public abstract class LuaScriptExecutor{
             LuaScriptExecutor sub = SubCommands.get(tempname);
             return sub.RunCommand(sender, args); 
         }
+        if(this.permission != null && !sender.hasPermission(this.permission)){
+            sender.spigot().sendMessage(TextBuilder.of("You don't have the permission to execute this commmand.").setColor(ChatColor.RED).build());
+            return false;
+        }
         String[] rargs = new String[args.size()];
-        for(int i = 0;i < args.size();++i){
+        for(int i = 0;i < rargs.length;++i){
             rargs[i] = args.poll();
         }
         return RunAsLeaf(sender, rargs);
