@@ -18,6 +18,7 @@ class luatest implements PluginDef{
     private LuaRunner luarunner;
     private FileLoader fileLoader;
     private H2Manager h2Manager;
+    private PluginStat pluginstat;
     @Override
     public LuaRunner getLuaRunner() {
         return luarunner;
@@ -40,8 +41,9 @@ class luatest implements PluginDef{
         lualoader = new LuaLoader(this);
         fileLoader = new FileLoader("script");
         luarunner = new LuaRunner();
-        h2Manager = new H2Manager("./H2/H2", "luascript", "luascript");
+        h2Manager = new H2Manager("./H2/H2", "luascript", "luascript",this);
         h2Manager.TryConnect();
+        pluginstat = new PluginStat();
     }
     public void test(){
         Scanner sc = new Scanner(System.in);
@@ -196,6 +198,11 @@ class luatest implements PluginDef{
     @Override
     public String getVersion() {
         return "test";
+    }
+
+    @Override
+    public PluginStat getPluginStat() {
+        return pluginstat;
     }
 }
 

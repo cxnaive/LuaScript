@@ -2,6 +2,7 @@ package cxmc.text;
 
 
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
 public class TextBuilder {
@@ -27,6 +28,10 @@ public class TextBuilder {
     }
     public TextBuilder append(TextComponent text){
         this.content.addExtra(text);
+        return this;
+    }
+    public TextBuilder setClickEvent(ClickEvent event){
+        this.content.setClickEvent(event);
         return this;
     }
     public TextComponent build(){

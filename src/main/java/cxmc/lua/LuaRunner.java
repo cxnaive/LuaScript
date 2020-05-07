@@ -38,6 +38,7 @@ public class LuaRunner {
                 try{
                     runFunc.invoke(args);
                 } catch(Exception ex){
+                    ex.printStackTrace();
                     System.out.println("killed "+runID+"!");
                 }
                 RemoveRunningScripts(runID);

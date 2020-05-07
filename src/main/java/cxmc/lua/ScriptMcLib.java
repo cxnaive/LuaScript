@@ -1,5 +1,6 @@
 package cxmc.lua;
 
+import org.bukkit.Bukkit;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.TwoArgFunction;
@@ -13,6 +14,7 @@ public class ScriptMcLib extends TwoArgFunction{
         library.set("time", new TimeFunc());
         library.set("sleep",new SleepFunc());
         library.set("servermsg",new ServerMsgFunc());
+        library.set("runcmd",new RunCmdFunc());
         env.set(libname,library);
         env.get("package").get("loaded").set(libname,library);
         return library;
@@ -40,8 +42,16 @@ public class ScriptMcLib extends TwoArgFunction{
     public class ServerMsgFunc extends OneArgFunction{
         @Override
         public LuaValue call(LuaValue arg){
-            System.out.println("Server:"+arg.checkstring());
-            return null;
+            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),"/say "+arg.checkjstring());
+            return LuaValue.valueOf("success");
+        }
+    }
+    
+    public class RunCmdFunc extends OneArgFunction{
+        @Override
+        public LuaValue call(LuaValue arg){
+            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),arg.checkjstring());
+            return LuaValue.valueOf("success");
         }
     }
 }

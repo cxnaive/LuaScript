@@ -1,5 +1,6 @@
 package cxmc.h2;
 
+import cxmc.PluginDef;
 import cxmc.essentials.*;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -14,6 +15,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 /*
 SID---script ID
 ID---area ID
@@ -47,10 +49,12 @@ public class H2Manager {
     private final String PATH;
     Connection conn;
 
-    public H2Manager(final String path, final String username, final String password) {
+    private PluginDef instance;
+    public H2Manager(final String path, final String username, final String password,final PluginDef instance) {
         this.PATH = path;
         this.PASSWORD = password;
         this.USER = username;
+        this.instance = instance;
     }
 
     public boolean TryConnect() {
@@ -158,7 +162,9 @@ public class H2Manager {
             CLS_SCRIPT.executeUpdate();
             return true;
         } catch (final Exception ex){
-            ex.printStackTrace();
+            if(instance.getPluginStat().isDebugMode){
+                ex.printStackTrace();
+            }
             return false;
         }
     }
@@ -168,7 +174,9 @@ public class H2Manager {
             CLS_POS.executeUpdate();
             return true;
         } catch (final Exception ex){
-            ex.printStackTrace();
+            if(instance.getPluginStat().isDebugMode){
+                ex.printStackTrace();
+            }
             return false;
         }
     }
@@ -178,7 +186,9 @@ public class H2Manager {
             CLS_AREA.executeUpdate();
             return true;
         } catch (final Exception ex){
-            ex.printStackTrace();
+            if(instance.getPluginStat().isDebugMode){
+                ex.printStackTrace();
+            }
             return false;
         }
     }
@@ -191,7 +201,9 @@ public class H2Manager {
             DEL_SCRIPT.executeUpdate();
             return true;
         } catch (final Exception ex){
-            ex.printStackTrace();
+            if(instance.getPluginStat().isDebugMode){
+                ex.printStackTrace();
+            }
             return false;
         }
     }
@@ -204,7 +216,9 @@ public class H2Manager {
             DEL_POS.executeUpdate();
             return true;
         } catch (final Exception ex) {
-            ex.printStackTrace();
+            if(instance.getPluginStat().isDebugMode){
+                ex.printStackTrace();
+            }
             return false;
         }
     }
@@ -215,7 +229,9 @@ public class H2Manager {
             DEL_AREA.executeUpdate();
             return true;
         } catch (final Exception ex) {
-            ex.printStackTrace();
+            if(instance.getPluginStat().isDebugMode){
+                ex.printStackTrace();
+            }
             return false;
         }
     }
@@ -228,7 +244,9 @@ public class H2Manager {
             final int cnt = result.getInt(1);
             return cnt == 1;
         } catch (final Exception ex) {
-            ex.printStackTrace();
+            if(instance.getPluginStat().isDebugMode){
+                ex.printStackTrace();
+            }
             return false;
         }
     }
@@ -243,7 +261,9 @@ public class H2Manager {
             final int cnt = result.getInt(1);
             return cnt == 1;
         } catch (final Exception ex) {
-            ex.printStackTrace();
+            if(instance.getPluginStat().isDebugMode){
+                ex.printStackTrace();
+            }
             return false;
         }
     }
@@ -256,7 +276,9 @@ public class H2Manager {
             final int cnt = result.getInt(1);
             return cnt == 1;
         } catch (final Exception ex) {
-            ex.printStackTrace();
+            if(instance.getPluginStat().isDebugMode){
+                ex.printStackTrace();
+            }
             return false;
         }
     }
@@ -271,7 +293,9 @@ public class H2Manager {
             final String now = result.getString(1);
             return now;
         } catch (final Exception ex) {
-            ex.printStackTrace();
+            if(instance.getPluginStat().isDebugMode){
+                ex.printStackTrace();
+            }
             return null;
         }
     }
@@ -284,7 +308,9 @@ public class H2Manager {
             final String now = result.getString(1);
             return now;
         } catch (final Exception ex) {
-            ex.printStackTrace();
+            if(instance.getPluginStat().isDebugMode){
+                ex.printStackTrace();
+            }
             return null;
         }
     }
@@ -308,7 +334,9 @@ public class H2Manager {
             result.next();
             return Blob2Map(result.getBlob(1));
         } catch (final Exception ex) {
-            ex.printStackTrace();
+            if(instance.getPluginStat().isDebugMode){
+                ex.printStackTrace();
+            }
             return null;
         }
     }
@@ -320,7 +348,9 @@ public class H2Manager {
             result.next();
             return Blob2Map(result.getBlob(1));
         } catch (final Exception ex) {
-            ex.printStackTrace();
+            if(instance.getPluginStat().isDebugMode){
+                ex.printStackTrace();
+            }
             return null;
         }
     }
@@ -332,7 +362,9 @@ public class H2Manager {
             result.next();
             return new Pair<ScriptPos,ScriptPos>(new ScriptPos(result.getInt(1), result.getInt(2), result.getInt(3)),new ScriptPos(result.getInt(4), result.getInt(5), result.getInt(6)));
         }catch(Exception ex){
-            ex.printStackTrace();
+            if(instance.getPluginStat().isDebugMode){
+                ex.printStackTrace();
+            }
             return null;
         }
     }
@@ -348,7 +380,9 @@ public class H2Manager {
             result.next();
             return result.getString(1);
         }catch(Exception ex){
-            ex.printStackTrace();
+            if(instance.getPluginStat().isDebugMode){
+                ex.printStackTrace();
+            }
             return null;
         }
     }
@@ -360,7 +394,9 @@ public class H2Manager {
             result.next();
             return result.getString(1);
         }catch(Exception ex){
-            ex.printStackTrace();
+            if(instance.getPluginStat().isDebugMode){
+                ex.printStackTrace();
+            }
             return null;
         }
     }
@@ -375,7 +411,9 @@ public class H2Manager {
             }
             return now;
         } catch (Exception ex){
-            ex.printStackTrace();
+            if(instance.getPluginStat().isDebugMode){
+                ex.printStackTrace();
+            }
             return null;
         }
     }
@@ -390,7 +428,9 @@ public class H2Manager {
             }
             return now;
         } catch (Exception ex){
-            ex.printStackTrace();
+            if(instance.getPluginStat().isDebugMode){
+                ex.printStackTrace();
+            }
             return null;
         }
     }
@@ -402,7 +442,9 @@ public class H2Manager {
             result.next();
             return result.getString(1);
         } catch (Exception ex){
-            ex.printStackTrace();
+            if(instance.getPluginStat().isDebugMode){
+                ex.printStackTrace();
+            }
             return null;
         }
     }
@@ -417,7 +459,9 @@ public class H2Manager {
             }
             return now;
         } catch (Exception ex){
-            ex.printStackTrace();
+            if(instance.getPluginStat().isDebugMode){
+                ex.printStackTrace();
+            }
             return null;
         }
     }
@@ -431,7 +475,9 @@ public class H2Manager {
             }
             return now;
         } catch (Exception ex){
-            ex.printStackTrace();
+            if(instance.getPluginStat().isDebugMode){
+                ex.printStackTrace();
+            }
             return null;
         }
     }
@@ -445,7 +491,9 @@ public class H2Manager {
             }
             return now;
         } catch (Exception ex){
-            ex.printStackTrace();
+            if(instance.getPluginStat().isDebugMode){
+                ex.printStackTrace();
+            }
             return null;
         }
     }
@@ -460,7 +508,9 @@ public class H2Manager {
             UPD_POS.executeUpdate();
             return true;
         } catch(Exception ex){
-            ex.printStackTrace();
+            if(instance.getPluginStat().isDebugMode){
+                ex.printStackTrace();
+            }
             return false;
         }
     }
@@ -473,7 +523,9 @@ public class H2Manager {
             int af = UPD_POS.executeUpdate();
             return af == 1;
         } catch(Exception ex){
-            ex.printStackTrace();
+            if(instance.getPluginStat().isDebugMode){
+                ex.printStackTrace();
+            }
             return false;
         }
     }
@@ -485,7 +537,9 @@ public class H2Manager {
             UPD_SCRIPT.executeUpdate();
             return true;
         } catch (final Exception ex) {
-            ex.printStackTrace();
+            if(instance.getPluginStat().isDebugMode){
+                ex.printStackTrace();
+            }
             return false;
         }
     }
@@ -499,7 +553,9 @@ public class H2Manager {
             int af = UPD_POS_VAR.executeUpdate();
             return af == 1;
         } catch (final Exception ex) {
-            ex.printStackTrace();
+            if(instance.getPluginStat().isDebugMode){
+                ex.printStackTrace();
+            }
             return false;
         }
     }
@@ -511,7 +567,9 @@ public class H2Manager {
             int af = UPD_AREA_VAR.executeUpdate();
             return af == 1;
         } catch (final Exception ex) {
-            ex.printStackTrace();
+            if(instance.getPluginStat().isDebugMode){
+                ex.printStackTrace();
+            }
             return false;
         }
     }
@@ -523,7 +581,9 @@ public class H2Manager {
             PUT_SCRIPT.executeUpdate();
             return true;
         } catch (final Exception ex) {
-            ex.printStackTrace();
+            if(instance.getPluginStat().isDebugMode){
+                ex.printStackTrace();
+            }
             return false;
         }
     }
@@ -538,7 +598,9 @@ public class H2Manager {
             PUT_POS.executeUpdate();
             return true;
         } catch (final Exception ex) {
-            ex.printStackTrace();
+            if(instance.getPluginStat().isDebugMode){
+                ex.printStackTrace();
+            }
             return false;
         }
     }
@@ -558,7 +620,9 @@ public class H2Manager {
             int af = PUT_AREA.executeUpdate();
             return af == 1;
         } catch (final Exception ex) {
-            ex.printStackTrace();
+            if(instance.getPluginStat().isDebugMode){
+                ex.printStackTrace();
+            }
             return false;
         }
     }

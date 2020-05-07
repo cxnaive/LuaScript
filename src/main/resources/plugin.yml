@@ -3,7 +3,8 @@ name: LuaScript
 version: 1.0
 author: cx
 website: cxspace.org
-softdepend: [Vault]
+api-version: 1.15
+softdepend: [Vault,LuckPerms]
 commands:
    luascript:
       description: This is the luas root command.
@@ -15,16 +16,56 @@ permissions:
    luascript.info:
       description: Allows luascript info command
       default: true
-   luascript.getmode:
+   luascript.mode.get:
       description: Allows luascript getmode command
       default: true
-   luascript.setmode:
+   luascript.mode.set:
       description: Allows luascript setmode command
       default: op
+   luascript.mode.*:
+      description: Wildcard permission for mode operations
+      default: op
+      children:
+         luascript.mode.set: true
+         luascript.mode.get: true
+   luascript.stat.get:
+      description: Get luascript's current status
+      default: true
+   luascript.stat.*:
+      description: Wildcard permission for plugin status operations
+      default: op
+      children:
+         luascript.stat.set: true
+   luascript.script.load:
+      description: Allows load script from disk or url
+      default: op
+   luascript.script.bind:
+      description: Allows player to bind a script onto itself
+      default: op
+   luascript.script.*:
+      description: Wildcard permission for script operations
+      default: op
+      children:
+         luascript.script.load: true
+         luascript.script.bind: true
+   luascript.running.kill:
+      description: Allows player to kill the running scripts
+      default: op
+   luascript.running.list:
+      description: Allows player to list the running scripts
+      default: op
+   luascript.running.*:
+      description: Wildcard permission for running-script operations
+      default: op
+      children:
+         luascript.running.kill: true
+         luascript.running.list: true
    luascript.*:
       description: Wildcard permission
       default: op
       children:
          luascript.info: true
-         luascript.getmode: true
-         luascript.setmode: true
+         luascript.mode.*: true
+         luascript.stat.*: true
+         luascript.script.*: true
+         luascript.running.*: true

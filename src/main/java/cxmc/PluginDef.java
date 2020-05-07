@@ -12,4 +12,5 @@ public interface PluginDef {
     public H2Manager getH2Manager();
     public FileLoader getFileLoader();
     public String getVersion();
+    public PluginStat getPluginStat();
 }

@@ -12,6 +12,7 @@ import org.luaj.vm2.Globals;
 import org.luaj.vm2.lib.jse.JsePlatform;
 
 public class LuaLoader {
+    
     private PluginDef instance;
     HashMap<String,Globals> StoredScripts;
     HashMap<String,HashMap<String,Object>> StoredVars;
@@ -46,7 +47,7 @@ public class LuaLoader {
             StoredScripts.put(pos.toString(), script);
             return script;
         } catch(Exception e){
-            e.printStackTrace();
+            //e.printStackTrace();
             return null;
         }
     }

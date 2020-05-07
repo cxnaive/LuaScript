@@ -11,7 +11,7 @@ public class FileLoader {
     }
     public String ReadScript(String file){
         try{
-            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(BaseDir+"/"+file)));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(BaseDir+"\\"+file)));
             String tmp = null;
             StringBuffer buffer = new StringBuffer();
             while((tmp = reader.readLine()) != null){

@@ -1,11 +1,18 @@
 package cxmc.essentials;
 
+import org.bukkit.block.Block;
+
 public class ScriptPos {
     public int x,y,z;
     public ScriptPos(int x,int y,int z){
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+    public ScriptPos(Block block){
+        this.x = block.getX();
+        this.y = block.getY();
+        this.z = block.getZ();
     }
     @Override
     public String toString(){

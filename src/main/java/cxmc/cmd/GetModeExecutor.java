@@ -7,6 +7,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import cxmc.LuaScript;
+import cxmc.text.TextBuilder;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.HoverEvent.Action;
 
 
 public class GetModeExecutor extends LuaScriptExecutor {
@@ -38,8 +44,14 @@ public class GetModeExecutor extends LuaScriptExecutor {
             sender.spigot().sendMessage(ArgNumErr);
             return false;
         }
-
-        sender.spigot().sendMessage(instance.getExtraDataLoader().getPlayerMode(player).getText());
+        TextComponent msg = instance.getExtraDataLoader().getPlayerMode(player).getText();
+        if(msg.toPlainText().equalsIgnoreCase("setmode")){
+            msg.setUnderlined(true);
+            String ScriptID = instance.getExtraDataLoader().getBindedScriptID(player);
+            if(ScriptID == null) ScriptID = "NULL";
+            msg.setHoverEvent(new HoverEvent(Action.SHOW_TEXT,new ComponentBuilder( "Bind Script:" ).color(ChatColor.AQUA).append(TextBuilder.of(ScriptID).setColor(ChatColor.YELLOW).build()).create()));
+        }
+        sender.spigot().sendMessage(msg);
         return true;
     }
 
