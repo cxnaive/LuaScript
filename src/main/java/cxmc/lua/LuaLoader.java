@@ -13,10 +13,10 @@ import org.luaj.vm2.lib.jse.JsePlatform;
 
 public class LuaLoader {
     
-    private PluginDef instance;
+    private LuaScript instance;
     HashMap<String,Globals> StoredScripts;
     HashMap<String,HashMap<String,Object>> StoredVars;
-    public LuaLoader(PluginDef instance){
+    public LuaLoader(LuaScript instance){
         this.StoredScripts = new HashMap<>();
         this.StoredVars = new HashMap<>();
         this.instance = instance;
@@ -42,7 +42,7 @@ public class LuaLoader {
         try{
             String luastr = instance.getH2Manager().GetPosScript(pos);
             script.load(new LuaDebugLib());
-            script.load(new ScriptMcLib());
+            script.load(new ScriptMcLib(instance));
             script.load(luastr,"@"+pos.toString(),script).call();
             StoredScripts.put(pos.toString(), script);
             return script;
@@ -56,7 +56,7 @@ public class LuaLoader {
         try{
             String luastr = instance.getH2Manager().GetAreaScript(AreaID);
             script.load(new LuaDebugLib());
-            script.load(new ScriptMcLib());
+            script.load(new ScriptMcLib(instance));
             script.load(luastr,"@"+AreaID,script).call();
             StoredScripts.put(AreaID, script);
             return script;

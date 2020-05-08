@@ -34,6 +34,7 @@ public class LoadScriptExecutor extends LuaScriptExecutor {
                 return true;
             }
             instance.getLuaLoader().SetScript(ScriptID, Content);
+            sender.spigot().sendMessage(TextBuilder.of("Successfully loaded script.").setColor(ChatColor.GREEN).build());
         }
         else if(args.length == 2 && args[1].equalsIgnoreCase("-y")){
             ScriptID = args[0];
@@ -43,6 +44,7 @@ public class LoadScriptExecutor extends LuaScriptExecutor {
                 return true;
             }
             instance.getLuaLoader().SetScript(ScriptID, Content);
+            sender.spigot().sendMessage(TextBuilder.of("Successfully loaded script.").setColor(ChatColor.GREEN).build());
         }
         else{
             sender.spigot().sendMessage(ArgNumErr);

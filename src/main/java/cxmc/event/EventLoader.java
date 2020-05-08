@@ -8,8 +8,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -52,6 +54,18 @@ public class EventLoader implements Listener {
         }
     }
 
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onEntityExplode(EntityExplodeEvent event){
+        Iterator<Block> iterator = event.blockList().iterator();
+        while(iterator.hasNext()){
+            Block now = iterator.next();
+            ScriptPos pos = new ScriptPos(now);
+            if(instance.getH2Manager().HasPos(pos)){
+                iterator.remove();
+            }
+        }
+    }
+
     void ExecuteBlock(ScriptPos pos,Player player,ItemStack onhand,String hand){
         //instance.getLogger().warning("0");
         LuaLoader loader = instance.getLuaLoader();
@@ -72,15 +86,21 @@ public class EventLoader implements Listener {
         }
         Player player = event.getPlayer();
         ScriptPos pos = new ScriptPos(event.getClickedBlock());
-        if(event.getHand() == EquipmentSlot.HAND){
+       // instance.getLogger().warning(event.getAction().name());
+        if(event.getAction() == Action.LEFT_CLICK_BLOCK){
             ItemStack onhand = event.hasItem() ? event.getItem().clone():null;
-            ExecuteBlock(pos, player, onhand, Defs.Mainhand);
+            ExecuteBlock(pos, player, onhand, Defs.LeftClick);
+            if(instance.getH2Manager().HasPos(pos)) event.setCancelled(true);
         }
-        else{
+        if(event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getHand() == EquipmentSlot.OFF_HAND){
             PlayerMode mode = instance.getExtraDataLoader().getPlayerMode(player);
             LuaLoader loader = instance.getLuaLoader();
             String ScriptID;
             switch(mode){
+                case Disabled:
+                    ItemStack onhand = event.hasItem() ? event.getItem().clone():null;
+                    ExecuteBlock(pos, player, onhand, Defs.RightClick);
+                    break;
                 case ViewMode:
                     ScriptID = loader.GetPosSID(pos);
                     if(ScriptID != null){
@@ -109,9 +129,9 @@ public class EventLoader implements Listener {
                     player.spigot().sendMessage(TextBuilder.of("Successfully set ScriptID.").setColor(ChatColor.AQUA).build());
                     break;
                 default:
+                    player.spigot().sendMessage(TextBuilder.of("Invalid palyer mode.").setColor(ChatColor.RED).build());
                     break;
             }
         }
-        event.setCancelled(true);
     }
 }

@@ -1,13 +1,20 @@
 package cxmc.lua;
 
 import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.TwoArgFunction;
 import org.luaj.vm2.lib.ZeroArgFunction;
 
+import cxmc.LuaScript;
+
 public class ScriptMcLib extends TwoArgFunction{
     public static String libname = "scriptmc";
+    private LuaScript instance;
+    public ScriptMcLib(LuaScript instance){
+        this.instance = instance;
+    }
     @Override
     public LuaValue call(LuaValue modname,LuaValue env){
         LuaValue library = tableOf();
@@ -42,7 +49,13 @@ public class ScriptMcLib extends TwoArgFunction{
     public class ServerMsgFunc extends OneArgFunction{
         @Override
         public LuaValue call(LuaValue arg){
-            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),"/say "+arg.checkjstring());
+            new BukkitRunnable(){
+                @Override
+                public void run() {
+                    Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),"say "+arg.checkjstring());
+                }
+            }.runTask(instance);
+            
             return LuaValue.valueOf("success");
         }
     }
@@ -50,7 +63,13 @@ public class ScriptMcLib extends TwoArgFunction{
     public class RunCmdFunc extends OneArgFunction{
         @Override
         public LuaValue call(LuaValue arg){
-            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),arg.checkjstring());
+            new BukkitRunnable(){
+                @Override
+                public void run() {
+                    Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),arg.checkjstring());
+                }
+            }.runTask(instance);
+
             return LuaValue.valueOf("success");
         }
     }

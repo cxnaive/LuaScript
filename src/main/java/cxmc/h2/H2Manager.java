@@ -1,6 +1,6 @@
 package cxmc.h2;
 
-import cxmc.PluginDef;
+import cxmc.LuaScript;
 import cxmc.essentials.*;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -15,6 +15,10 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 
 /*
 SID---script ID
@@ -25,12 +29,12 @@ public class H2Manager {
     private static final String DRIVER_CLASS = "org.h2.Driver";
     
     private static final String POS_STRING = "POS";
-    private static final String POS_STRUCT = "(X INT,Y INT,Z INT,SID VARCHAR(255),VARS BLOB)";
-    private static final String POS_COLUMNS = "(X,Y,Z,SID,VARS)";
+    private static final String POS_STRUCT = "(X INT,Y INT,Z INT,WORLD CHAR(36),SID VARCHAR(255),VARS BLOB)";
+    private static final String POS_COLUMNS = "(X,Y,Z,WORLD,SID,VARS)";
 
     private static final String AREA_STRING = "AREA";
-    private static final String AREA_STRUCT = "(X1 INT,Y1 INT,Z1 INT,X2 INT,Y2 INT,Z2 INT,ID VARCHAR(255),SID VARCHAR(255),VARS BLOB)";
-    private static final String AREA_COLUMNS = "(X1,Y1,Z1,X2,Y2,Z2,ID,SID,VARS)";
+    private static final String AREA_STRUCT = "(X1 INT,Y1 INT,Z1 INT,X2 INT,Y2 INT,Z2 INT,WORLD CHAR(36),ID VARCHAR(255),SID VARCHAR(255),VARS BLOB)";
+    private static final String AREA_COLUMNS = "(X1,Y1,Z1,X2,Y2,Z2,WORLD,ID,SID,VARS)";
 
     private static final String SCRIPT_STRING = "SCRIPT";
     private static final String SCRIPT_STRUCT = "(SID VARCHAR(255),CONTENT VARCHAR(65535))";
@@ -49,8 +53,8 @@ public class H2Manager {
     private final String PATH;
     Connection conn;
 
-    private PluginDef instance;
-    public H2Manager(final String path, final String username, final String password,final PluginDef instance) {
+    private LuaScript instance;
+    public H2Manager(final String path, final String username, final String password,final LuaScript instance) {
         this.PATH = path;
         this.PASSWORD = password;
         this.USER = username;
@@ -68,40 +72,40 @@ public class H2Manager {
             statement.execute("CREATE TABLE IF NOT EXISTS " + SCRIPT_STRING + SCRIPT_STRUCT);
             statement.close();
             PUT_SCRIPT = conn.prepareStatement("INSERT INTO " + SCRIPT_STRING + SCRIPT_COLUMNS + " VALUES(?,?)");
-            PUT_POS = conn.prepareStatement("INSERT INTO " + POS_STRING + POS_COLUMNS + " VALUES(?,?,?,?,?)");
+            PUT_POS = conn.prepareStatement("INSERT INTO " + POS_STRING + POS_COLUMNS + " VALUES(?,?,?,?,?,?)");
             PUT_AREA = conn
-                    .prepareStatement("INSERT INTO " + AREA_STRING + AREA_COLUMNS + " VALUES(?,?,?,?,?,?,?,?,?)");
+                    .prepareStatement("INSERT INTO " + AREA_STRING + AREA_COLUMNS + " VALUES(?,?,?,?,?,?,?,?,?,?)");
 
-            HAS_POS = conn.prepareStatement("SELECT COUNT(*) FROM " + POS_STRING + " WHERE X = ? AND Y = ? AND Z = ? ");
+            HAS_POS = conn.prepareStatement("SELECT COUNT(*) FROM " + POS_STRING + " WHERE X = ? AND Y = ? AND Z = ? AND WORLD = ?");
             HAS_AREA = conn.prepareStatement("SELECT COUNT(*) FROM " + AREA_STRING + " WHERE ID = ?");
             HAS_SID = conn.prepareStatement("SELECT COUNT(*) FROM " + SCRIPT_STRING + " WHERE SID = ?");
             
             GET_POS_SCRIPT = conn.prepareStatement("SELECT CONTENT FROM " + SCRIPT_STRING 
-                    + " WHERE SID IN (SELECT SID FROM " + POS_STRING + " WHERE X = ? AND Y = ? AND Z = ?)");
+                    + " WHERE SID IN (SELECT SID FROM " + POS_STRING + " WHERE X = ? AND Y = ? AND Z = ? AND WORLD = ?)");
             GET_AREA_SCRIPT = conn.prepareStatement("SELECT CONTENT FROM " + SCRIPT_STRING
                     + " WHERE SID IN (SELECT SID FROM " + AREA_STRING + " WHERE ID = ?)");
-            GET_POS_SID = conn.prepareStatement("SELECT SID FROM "+POS_STRING+" WHERE X = ? AND Y = ? AND Z = ?");
+            GET_POS_SID = conn.prepareStatement("SELECT SID FROM "+POS_STRING+" WHERE X = ? AND Y = ? AND Z = ? AND WORLD = ?");
             GET_AREA_SID = conn.prepareStatement("SELECT SID FROM "+AREA_STRING+" WHERE ID = ?");
-            GET_POS_VARS = conn.prepareStatement("SELECT VARS FROM "+POS_STRING+" WHERE X = ? AND Y = ? AND Z = ?");
+            GET_POS_VARS = conn.prepareStatement("SELECT VARS FROM "+POS_STRING+" WHERE X = ? AND Y = ? AND Z = ? AND WORLD = ?");
             GET_AREA_VARS = conn.prepareStatement("SELECT VARS FROM "+AREA_STRING+" WHERE ID = ?");
-            GET_AREA_AABB = conn.prepareStatement("SELECT X1,Y1,Z1,X2,Y2,Z2 FROM "+AREA_STRING+" WHERE ID = ?");
-            GET_POS_BY_SID = conn.prepareStatement("SELECT X,Y,Z FROM "+POS_STRING+" WHERE SID = ?");
+            GET_AREA_AABB = conn.prepareStatement("SELECT X1,Y1,Z1,X2,Y2,Z2,WORLD FROM "+AREA_STRING+" WHERE ID = ?");
+            GET_POS_BY_SID = conn.prepareStatement("SELECT X,Y,Z,WORLD FROM "+POS_STRING+" WHERE SID = ?");
             GET_AREA_BY_SID = conn.prepareStatement("SELECT ID FROM "+AREA_STRING+" WHERE SID = ?");
-            GET_POS_ALL = conn.prepareStatement("SELECT X,Y,Z,SID FROM "+POS_STRING);
+            GET_POS_ALL = conn.prepareStatement("SELECT X,Y,Z,WORLD,SID FROM "+POS_STRING);
             GET_AREA_ALL = conn.prepareStatement("SELECT ID,SID FROM "+AREA_STRING);
             GET_SID_ALL = conn.prepareStatement("SELECT SID FROM "+SCRIPT_STRING);
             GET_SCRIPT_BY_SID = conn.prepareStatement("SELECT CONTENT FROM "+SCRIPT_STRING+" WHERE SID = ?");
 
             UPD_SCRIPT = conn.prepareStatement("UPDATE " + SCRIPT_STRING + " SET CONTENT = ? WHERE SID = ?");
             UPD_POS_VAR = conn.prepareStatement(
-                    "UPDATE " + POS_STRING + " SET VARS = ? WHERE X = ? AND Y = ? AND Z = ?");
+                    "UPDATE " + POS_STRING + " SET VARS = ? WHERE X = ? AND Y = ? AND Z = ? AND WORLD = ?");
             UPD_AREA_VAR = conn
                     .prepareStatement("UPDATE " + AREA_STRING + " SET VARS = ? WHERE ID = ?");
-            UPD_POS = conn.prepareStatement("UPDATE "+ POS_STRING + " SET SID = ?,VARS = ? WHERE X = ? AND Y = ? AND Z = ?");
+            UPD_POS = conn.prepareStatement("UPDATE "+ POS_STRING + " SET SID = ?,VARS = ? WHERE X = ? AND Y = ? AND Z = ? AND WORLD = ?");
             UPD_AREA = conn.prepareStatement("UPDATE " + AREA_STRING + " SET SID = ?,VARS = ? WHERE ID = ?");
             
             DEL_SCRIPT = conn.prepareStatement("DELETE FROM "+POS_STRING+" WHERE SID = ?;"+"DELETE FROM "+AREA_STRING+" WHERE SID = ?;"+"DELETE FROM "+SCRIPT_STRING+" WHERE SID = ?");
-            DEL_POS = conn.prepareStatement("DELETE FROM "+POS_STRING+" WHERE X = ? AND Y = ? AND Z = ?");
+            DEL_POS = conn.prepareStatement("DELETE FROM "+POS_STRING+" WHERE X = ? AND Y = ? AND Z = ? AND WORLD = ?");
             DEL_AREA = conn.prepareStatement("DELETE FROM "+AREA_STRING+" WHERE ID = ?");
             
             CLS_AREA = conn.prepareStatement("DELETE FROM "+AREA_STRING);
@@ -213,6 +217,7 @@ public class H2Manager {
             DEL_POS.setInt(1, pos.x);
             DEL_POS.setInt(2, pos.y);
             DEL_POS.setInt(3, pos.z);
+            DEL_POS.setString(4, pos.world.getUID().toString());
             DEL_POS.executeUpdate();
             return true;
         } catch (final Exception ex) {
@@ -256,6 +261,7 @@ public class H2Manager {
             HAS_POS.setInt(1, pos.x);
             HAS_POS.setInt(2, pos.y);
             HAS_POS.setInt(3, pos.z);
+            HAS_POS.setString(4, pos.world.getUID().toString());
             final ResultSet result = HAS_POS.executeQuery();
             result.next();
             final int cnt = result.getInt(1);
@@ -288,6 +294,7 @@ public class H2Manager {
             GET_POS_SCRIPT.setInt(1, pos.x);
             GET_POS_SCRIPT.setInt(2, pos.y);
             GET_POS_SCRIPT.setInt(3, pos.z);
+            GET_POS_SCRIPT.setString(4, pos.world.getUID().toString());
             final ResultSet result = GET_POS_SCRIPT.executeQuery();
             result.next();
             final String now = result.getString(1);
@@ -330,6 +337,7 @@ public class H2Manager {
             GET_POS_VARS.setInt(1, pos.x);
             GET_POS_VARS.setInt(2, pos.y);
             GET_POS_VARS.setInt(3, pos.z);
+            GET_POS_SCRIPT.setString(4, pos.world.getUID().toString());
             final ResultSet result = GET_POS_VARS.executeQuery();
             result.next();
             return Blob2Map(result.getBlob(1));
@@ -360,7 +368,8 @@ public class H2Manager {
             GET_AREA_AABB.setString(1, AreaID);
             ResultSet result = GET_AREA_AABB.executeQuery();
             result.next();
-            return new Pair<ScriptPos,ScriptPos>(new ScriptPos(result.getInt(1), result.getInt(2), result.getInt(3)),new ScriptPos(result.getInt(4), result.getInt(5), result.getInt(6)));
+            World now = Bukkit.getWorld(UUID.fromString(result.getString(4)));
+            return new Pair<ScriptPos,ScriptPos>(new ScriptPos(result.getInt(1), result.getInt(2), result.getInt(3),now),new ScriptPos(result.getInt(4), result.getInt(5), result.getInt(6),now));
         }catch(Exception ex){
             if(instance.getPluginStat().isDebugMode){
                 ex.printStackTrace();
@@ -376,6 +385,7 @@ public class H2Manager {
             GET_POS_SID.setInt(1, pos.x);
             GET_POS_SID.setInt(2, pos.y);
             GET_POS_SID.setInt(3, pos.z);
+            GET_POS_SID.setString(4, pos.world.getUID().toString());
             ResultSet result =  GET_POS_SID.executeQuery();
             result.next();
             return result.getString(1);
@@ -407,7 +417,8 @@ public class H2Manager {
             ResultSet result = GET_POS_BY_SID.executeQuery();
             List<ScriptPos> now = new ArrayList<>();
             while(result.next()){
-                now.add(new ScriptPos(result.getInt(1), result.getInt(2), result.getInt(3)));
+                World world = Bukkit.getWorld(UUID.fromString(result.getString(4)));
+                now.add(new ScriptPos(result.getInt(1), result.getInt(2), result.getInt(3), world));
             }
             return now;
         } catch (Exception ex){
@@ -454,8 +465,9 @@ public class H2Manager {
             ResultSet result = GET_POS_ALL.executeQuery();
             List<Pair<ScriptPos,String>> now = new ArrayList<>();
             while(result.next()){
-                ScriptPos npos = new ScriptPos(result.getInt(1), result.getInt(2), result.getInt(3));
-                now.add(new Pair<ScriptPos,String>(npos,result.getString(4)));
+                World world = Bukkit.getWorld(UUID.fromString(result.getString(4)));
+                ScriptPos npos = new ScriptPos(result.getInt(1), result.getInt(2), result.getInt(3), world);
+                now.add(new Pair<ScriptPos,String>(npos,result.getString(5)));
             }
             return now;
         } catch (Exception ex){
@@ -505,6 +517,7 @@ public class H2Manager {
             UPD_POS.setInt(3, pos.x);
             UPD_POS.setInt(4, pos.y);
             UPD_POS.setInt(5, pos.z);
+            UPD_POS.setString(6, pos.world.getUID().toString());
             UPD_POS.executeUpdate();
             return true;
         } catch(Exception ex){
@@ -550,6 +563,7 @@ public class H2Manager {
             UPD_POS_VAR.setInt(2, pos.x);
             UPD_POS_VAR.setInt(3, pos.y);
             UPD_POS_VAR.setInt(4, pos.z);
+            UPD_POS_VAR.setString(5, pos.world.getUID().toString());
             int af = UPD_POS_VAR.executeUpdate();
             return af == 1;
         } catch (final Exception ex) {
@@ -593,8 +607,9 @@ public class H2Manager {
             PUT_POS.setInt(1, pos.x);
             PUT_POS.setInt(2, pos.y);
             PUT_POS.setInt(3, pos.z);
-            PUT_POS.setString(4, ScriptID);
-            PUT_POS.setObject(5, values);
+            PUT_POS.setString(4, pos.world.getUID().toString());
+            PUT_POS.setString(5, ScriptID);
+            PUT_POS.setObject(6, values);
             PUT_POS.executeUpdate();
             return true;
         } catch (final Exception ex) {
@@ -614,9 +629,10 @@ public class H2Manager {
             PUT_AREA.setInt(4, pos2.x);
             PUT_AREA.setInt(5, pos2.y);
             PUT_AREA.setInt(6, pos2.z);
-            PUT_AREA.setString(7, AreaID);
-            PUT_AREA.setString(8, ScriptID);
-            PUT_AREA.setObject(9, values);
+            PUT_AREA.setString(7, pos1.world.getUID().toString());
+            PUT_AREA.setString(8, AreaID);
+            PUT_AREA.setString(9, ScriptID);
+            PUT_AREA.setObject(10, values);
             int af = PUT_AREA.executeUpdate();
             return af == 1;
         } catch (final Exception ex) {

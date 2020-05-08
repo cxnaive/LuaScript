@@ -1,4 +1,3 @@
-cxmc\PluginDef.class
 cxmc\essentials\ScriptPos.class
 cxmc\h2\H2Manager.class
 cxmc\lua\LuaRunner.class
@@ -11,7 +10,6 @@ cxmc\lua\LuaDebugLib.class
 cxmc\lua\ScriptMcLib.class
 cxmc\file\FileLoader.class
 cxmc\cmd\GetModeExecutor.class
-cxmc\TestClass.class
 cxmc\text\TextBuilder.class
 cxmc\config\ConfigLoader.class
 cxmc\LuaScript.class
@@ -24,5 +22,4 @@ cxmc\lua\ScriptMcLib$SleepFunc.class
 cxmc\cmd\CommandLoader.class
 cxmc\cmd\RootExecutor.class
 cxmc\extra\PlayerMode.class
-cxmc\luatest.class
 cxmc\lua\ScriptMcLib$ServerMsgFunc.class

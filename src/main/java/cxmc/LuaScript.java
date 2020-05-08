@@ -9,12 +9,13 @@ import cxmc.extra.ExtraDataLoader;
 import cxmc.extra.IDgenerator;
 import cxmc.file.*;
 import cxmc.lua.*;
+import cxmc.scheduler.CheckPosTask;
 import net.luckperms.api.LuckPerms;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import cxmc.h2.*;
 
-public class LuaScript extends JavaPlugin implements PluginDef {
+public class LuaScript extends JavaPlugin {
     private LuaLoader lualoader;
     private LuaRunner luarunner;
     private FileLoader fileLoader;
@@ -27,6 +28,7 @@ public class LuaScript extends JavaPlugin implements PluginDef {
     private LuaPermHandler luaPermHandler;
     private PluginStat pluginStat;
     private IDgenerator idgenerator;
+    private CheckPosTask checkPosTask;
 
     private final String version = "1.0";
     @Override
@@ -63,6 +65,8 @@ public class LuaScript extends JavaPlugin implements PluginDef {
         luaPermHandler = new LuaPermHandler(this);
         getServer().getPluginManager().registerEvents(new EventLoader(this), this);
         idgenerator = new IDgenerator();
+        checkPosTask = new CheckPosTask(this);
+        checkPosTask.runTaskTimerAsynchronously(this, 0, 1);
     }
     
     boolean SetupVaultEcon(){
@@ -108,35 +112,24 @@ public class LuaScript extends JavaPlugin implements PluginDef {
         configLoader.SaveConfig();
     }
 
-    @Override
     public LuaRunner getLuaRunner() {
         return luarunner;
     }
-
-    @Override
     public LuaLoader getLuaLoader() {
         return lualoader;
     }
-
-    @Override
     public H2Manager getH2Manager() {
         return h2Manager;
     }
-
-    @Override
     public FileLoader getFileLoader(){
         return fileLoader;
     }
-
-    @Override
     public String getVersion() {
         return version;
     }
-
     public ConfigLoader getConfigLoader(){
         return configLoader;
     }
-
     public ExtraDataLoader getExtraDataLoader(){
         return extraDataLoader;
     }
@@ -152,8 +145,6 @@ public class LuaScript extends JavaPlugin implements PluginDef {
     public LuaPermHandler getluaPermHandler(){
         return luaPermHandler;
     }
-
-    @Override
     public PluginStat getPluginStat(){
         return pluginStat;
     }

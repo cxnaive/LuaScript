@@ -1,5 +1,9 @@
 package cxmc.cmd;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -12,6 +16,16 @@ public class SetModeExecutor extends LuaScriptExecutor {
     private LuaScript instance;
     public SetModeExecutor(LuaScript instance){
         this.instance = instance;
+    }
+    
+    @Override
+    public List<String> LeafTabComplete(CommandSender sender, Queue<String> args) {
+        List<String> coms = new ArrayList<>();
+        coms.add(PlayerMode.Disabled.name());
+        coms.add(PlayerMode.ViewMode.name());
+        coms.add(PlayerMode.SetMode.name());
+        coms.add(PlayerMode.DelMode.name());
+        return coms;
     }
     @Override
     public boolean RunAsLeaf(CommandSender sender, String[] args) {

@@ -43,7 +43,7 @@ public abstract class LuaScriptExecutor{
         String tempname = args.peek();
         if(tempname == null) tempname = "";
         Set<String> subnames = SubCommands.keySet(); 
-        List<String> coms = new ArrayList<>();
+        List<String> coms = LeafTabComplete(sender, args);
         for(String sub:subnames){
             if(sub.startsWith(tempname)){
                 coms.add(sub);
@@ -70,4 +70,7 @@ public abstract class LuaScriptExecutor{
         return RunAsLeaf(sender, rargs);
     }
     public abstract boolean RunAsLeaf(CommandSender sender,String[] args);
+    public List<String> LeafTabComplete(CommandSender sender,Queue<String> args){
+        return new ArrayList<>();
+    }
 }

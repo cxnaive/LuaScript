@@ -1,7 +1,6 @@
 package cxmc.lua;
-
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import cxmc.LuaScript;
 
@@ -18,8 +17,13 @@ public class ScriptPlayer {
     public String getName(){
         return player.getName();
     }
-    public boolean performCommand(String cmd){
-        return Bukkit.getServer().dispatchCommand(player,cmd);
+    public void runcmd(String cmd){
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                player.performCommand(cmd);
+            }
+        }.runTask(instance);
     }
     public float getExhaustion​(){
         return player.getExhaustion();
@@ -32,6 +36,12 @@ public class ScriptPlayer {
     }
     public double getHealthScale(){
         return player.getHealthScale();
+    }
+    public float getFlySpeed(){
+        return player.getFlySpeed();
+    }
+    public float getWalkSpeed(){
+        return player.getWalkSpeed();
     }
     public boolean isSneaking(){
         return player.isSneaking();
@@ -52,7 +62,12 @@ public class ScriptPlayer {
         instance.getluaPermHandler().removePermisson(player, perm);
     }
     public void chat(String msg){
-        Bukkit.getServer().dispatchCommand(player,"/say "+msg);
-        //player.chat(msg);
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                player.chat(msg);
+            }
+        }.runTask(instance);
+        
     }
 }
