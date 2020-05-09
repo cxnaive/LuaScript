@@ -60,6 +60,18 @@ permissions:
       children:
          luascript.running.kill: true
          luascript.running.list: true
+   luascript.pos.clear:
+      description: Allows player to clear script poses
+      default: op
+   luascript.pos.list:
+      description: Allows player to list script poses
+      default: op
+   luascript.pos.*:
+      description: Wildcard permission for script-pos operations
+      default: op
+      children:
+         luascript.pos.kill: true
+         luascript.pos.list: true
    luascript.*:
       description: Wildcard permission
       default: op

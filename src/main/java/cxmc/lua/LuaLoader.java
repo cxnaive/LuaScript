@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.bukkit.World;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.lib.jse.JsePlatform;
 
@@ -84,6 +85,12 @@ public class LuaLoader {
         RefreshScriptPos(poses);
         RefreshVarsPos(poses);
         instance.getH2Manager().ClearPos();
+    }
+    public void ClearWorld(World world){
+        List<ScriptPos> poses = instance.getH2Manager().GetPosByWorld(world.getUID());
+        RefreshScriptPos(poses);
+        RefreshVarsPos(poses);
+        instance.getH2Manager().ClearWorld(world.getUID());
     }
     public void ClearScript(){
         ClearArea();

@@ -44,10 +44,10 @@ public class H2Manager {
     private PreparedStatement HAS_POS,HAS_AREA,HAS_SID;
     private PreparedStatement GET_POS_SCRIPT,GET_POS_SID,GET_AREA_SID,GET_AREA_SCRIPT,
                             GET_POS_VARS,GET_AREA_VARS,GET_AREA_AABB,GET_POS_BY_SID,GET_AREA_BY_SID,
-                            GET_POS_ALL,GET_AREA_ALL,GET_SID_ALL,GET_SCRIPT_BY_SID;
+                            GET_POS_ALL,GET_AREA_ALL,GET_SID_ALL,GET_SCRIPT_BY_SID,GET_POS_BY_WLD;
     private PreparedStatement UPD_SCRIPT,UPD_POS_VAR,UPD_AREA_VAR,UPD_POS,UPD_AREA;
     private PreparedStatement DEL_SCRIPT,DEL_POS,DEL_AREA;
-    private PreparedStatement CLS_POS,CLS_AREA,CLS_SCRIPT;
+    private PreparedStatement CLS_POS,CLS_AREA,CLS_SCRIPT,CLS_WORLD;
     private final String USER;
     private final String PASSWORD;
     private final String PATH;
@@ -89,6 +89,7 @@ public class H2Manager {
             GET_POS_VARS = conn.prepareStatement("SELECT VARS FROM "+POS_STRING+" WHERE X = ? AND Y = ? AND Z = ? AND WORLD = ?");
             GET_AREA_VARS = conn.prepareStatement("SELECT VARS FROM "+AREA_STRING+" WHERE ID = ?");
             GET_AREA_AABB = conn.prepareStatement("SELECT X1,Y1,Z1,X2,Y2,Z2,WORLD FROM "+AREA_STRING+" WHERE ID = ?");
+            GET_POS_BY_WLD = conn.prepareStatement("SELECT X,Y,Z,WORLD FROM "+POS_STRING+" WHERE WORLD = ?");
             GET_POS_BY_SID = conn.prepareStatement("SELECT X,Y,Z,WORLD FROM "+POS_STRING+" WHERE SID = ?");
             GET_AREA_BY_SID = conn.prepareStatement("SELECT ID FROM "+AREA_STRING+" WHERE SID = ?");
             GET_POS_ALL = conn.prepareStatement("SELECT X,Y,Z,WORLD,SID FROM "+POS_STRING);
@@ -107,13 +108,14 @@ public class H2Manager {
             DEL_SCRIPT = conn.prepareStatement("DELETE FROM "+POS_STRING+" WHERE SID = ?;"+"DELETE FROM "+AREA_STRING+" WHERE SID = ?;"+"DELETE FROM "+SCRIPT_STRING+" WHERE SID = ?");
             DEL_POS = conn.prepareStatement("DELETE FROM "+POS_STRING+" WHERE X = ? AND Y = ? AND Z = ? AND WORLD = ?");
             DEL_AREA = conn.prepareStatement("DELETE FROM "+AREA_STRING+" WHERE ID = ?");
-            
+
             CLS_AREA = conn.prepareStatement("DELETE FROM "+AREA_STRING);
             CLS_POS = conn.prepareStatement("DELETE FROM "+POS_STRING);
             CLS_SCRIPT = conn.prepareStatement("DELETE FROM "+SCRIPT_STRING);
+            CLS_WORLD = conn.prepareStatement("DELETE FROM " + POS_STRING + " WHERE WORLD = ?");
             return true;
         } catch (final Exception ex) {
-            System.out.println(ex.getMessage());
+            ex.printStackTrace();
             return false;
         }
     }
@@ -132,6 +134,7 @@ public class H2Manager {
             GET_AREA_SCRIPT.close();
             GET_SCRIPT_BY_SID.close();
             GET_POS_SID.close();
+            GET_POS_BY_WLD.close();
             GET_AREA_SID.close();
             GET_POS_VARS.close();
             GET_AREA_VARS.close();
@@ -155,9 +158,10 @@ public class H2Manager {
             CLS_SCRIPT.close();
             CLS_POS.close();
             CLS_AREA.close();
+            CLS_WORLD.close();
             conn.close();
         } catch (final Exception ex) {
-            System.out.println(ex.getMessage());
+            ex.printStackTrace();
         }
     }
 
@@ -188,6 +192,19 @@ public class H2Manager {
     public boolean ClearArea(){
         try{
             CLS_AREA.executeUpdate();
+            return true;
+        } catch (final Exception ex){
+            if(instance.getPluginStat().isDebugMode){
+                ex.printStackTrace();
+            }
+            return false;
+        }
+    }
+
+    public boolean ClearWorld(final UUID world){
+        try{
+            CLS_WORLD.setString(1, world.toString());
+            CLS_WORLD.executeUpdate();
             return true;
         } catch (final Exception ex){
             if(instance.getPluginStat().isDebugMode){
@@ -390,6 +407,24 @@ public class H2Manager {
             result.next();
             return result.getString(1);
         }catch(Exception ex){
+            if(instance.getPluginStat().isDebugMode){
+                ex.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    public List<ScriptPos> GetPosByWorld(final UUID wuuid){
+        try{
+            GET_POS_BY_WLD.setString(1, wuuid.toString());
+            ResultSet result = GET_POS_BY_WLD.executeQuery();
+            List<ScriptPos> now = new ArrayList<>();
+            while(result.next()){
+                World world = Bukkit.getWorld(UUID.fromString(result.getString(4)));
+                now.add(new ScriptPos(result.getInt(1), result.getInt(2), result.getInt(3), world));
+            }
+            return now;
+        } catch (Exception ex){
             if(instance.getPluginStat().isDebugMode){
                 ex.printStackTrace();
             }

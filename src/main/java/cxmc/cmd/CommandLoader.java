@@ -28,6 +28,15 @@ public class CommandLoader {
         KillRunningExecutor killRunningExecutor = new KillRunningExecutor(instance);
         killRunningExecutor.SetPermission("luascript.running.kill");
 
+        ClearPosExecutor clearPosExecutor = new ClearPosExecutor(instance);
+        clearPosExecutor.SetPermission("luascript.pos.clear");
+
+        ClearWorldExecutor clearWorldExecutor = new ClearWorldExecutor(instance);
+        clearWorldExecutor.SetPermission("luascript.pos.clear");
+
+        ListPosExecutor listPosExecutor = new ListPosExecutor(instance);
+        listPosExecutor.SetPermission("luascript.pos.list");
+
         RootExecutor RootCMD = new RootExecutor(instance);
         RootCMD.SetPermission("luascript.info");
         RootCMD.RegisterSubcommand("getmode", getModeExecutor);
@@ -36,8 +45,11 @@ public class CommandLoader {
         RootCMD.RegisterSubcommand("bindscript", bindScriptExecutor);
         RootCMD.RegisterSubcommand("loadscript", loadScriptExecutor);
         RootCMD.RegisterSubcommand("listscript", listScriptExecutor);
+        RootCMD.RegisterSubcommand("listpos", listPosExecutor);
         RootCMD.RegisterSubcommand("listrunning", listRunningExecutor);
         RootCMD.RegisterSubcommand("killrunning", killRunningExecutor);
+        RootCMD.RegisterSubcommand("clearpos", clearPosExecutor);
+        RootCMD.RegisterSubcommand("clearworld", clearWorldExecutor);
 
         instance.getCommand("luascript").setExecutor(RootCMD);
         instance.getCommand("luascript").setTabCompleter(RootCMD);

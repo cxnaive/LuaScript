@@ -1,2 +1,3 @@
 rm D:\mcserver\paper\plugins\LuaScript-1.0-SNAPSHOT-jar-with-dependencies.jar
 cp D:\projects\LuaScript\target\LuaScript-1.0-SNAPSHOT-jar-with-dependencies.jar D:\mcserver\paper\plugins\
+D:\mcserver\paper\start.ps7
