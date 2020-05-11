@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Queue;
-import java.util.Set;
-
 import org.bukkit.command.CommandSender;
 
 import cxmc.text.TextBuilder;
@@ -42,9 +40,10 @@ public abstract class LuaScriptExecutor{
         }
         String tempname = args.peek();
         if(tempname == null) tempname = "";
-        Set<String> subnames = SubCommands.keySet(); 
-        List<String> coms = LeafTabComplete(sender, args);
-        for(String sub:subnames){
+        List<String> tmps = LeafTabComplete(sender, args);
+        tmps.addAll(SubCommands.keySet());
+        List<String> coms = new ArrayList<>();
+        for(String sub:tmps){
             if(sub.startsWith(tempname)){
                 coms.add(sub);
             }

@@ -22,6 +22,9 @@ public class CommandLoader {
         ListScriptExecutor listScriptExecutor = new ListScriptExecutor(instance);
         listScriptExecutor.SetPermission("luascript.script.list");
 
+        DelScriptExecutor delScriptExecutor = new DelScriptExecutor(instance);
+        delScriptExecutor.SetPermission("luascript.script.delete");
+
         ListRunningExecutor listRunningExecutor = new ListRunningExecutor(instance);
         listRunningExecutor.SetPermission("luascript.running.list");
 
@@ -37,6 +40,8 @@ public class CommandLoader {
         ListPosExecutor listPosExecutor = new ListPosExecutor(instance);
         listPosExecutor.SetPermission("luascript.pos.list");
 
+        
+
         RootExecutor RootCMD = new RootExecutor(instance);
         RootCMD.SetPermission("luascript.info");
         RootCMD.RegisterSubcommand("getmode", getModeExecutor);
@@ -45,6 +50,7 @@ public class CommandLoader {
         RootCMD.RegisterSubcommand("bindscript", bindScriptExecutor);
         RootCMD.RegisterSubcommand("loadscript", loadScriptExecutor);
         RootCMD.RegisterSubcommand("listscript", listScriptExecutor);
+        RootCMD.RegisterSubcommand("delscript", delScriptExecutor);
         RootCMD.RegisterSubcommand("listpos", listPosExecutor);
         RootCMD.RegisterSubcommand("listrunning", listRunningExecutor);
         RootCMD.RegisterSubcommand("killrunning", killRunningExecutor);
