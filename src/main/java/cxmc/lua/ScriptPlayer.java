@@ -3,6 +3,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import cxmc.LuaScript;
+import cxmc.text.TextBuilder;
 
 public class ScriptPlayer {
     private Player player;
@@ -61,6 +62,10 @@ public class ScriptPlayer {
     public void RemovePermission(String perm){
         instance.getluaPermHandler().removePermisson(player, perm);
     }
+    public void sendmessage(Object value){
+        TextBuilder msg = (TextBuilder)value;
+        player.spigot().sendMessage(msg.build());
+    }
     public void chat(String msg){
         new BukkitRunnable(){
             @Override
@@ -68,6 +73,5 @@ public class ScriptPlayer {
                 player.chat(msg);
             }
         }.runTask(instance);
-        
     }
 }

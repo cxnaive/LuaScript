@@ -2,12 +2,16 @@ package cxmc.lua;
 
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.luaj.vm2.LuaUserdata;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.TwoArgFunction;
 import org.luaj.vm2.lib.ZeroArgFunction;
+import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
 import cxmc.LuaScript;
+import cxmc.text.TextBuilder;
+import net.md_5.bungee.api.ChatColor;
 
 public class ScriptMcLib extends TwoArgFunction{
     public static String libname = "scriptmc";
@@ -22,6 +26,8 @@ public class ScriptMcLib extends TwoArgFunction{
         library.set("sleep",new SleepFunc());
         library.set("servermsg",new ServerMsgFunc());
         library.set("runcmd",new RunCmdFunc());
+        library.set("color",new ColorFunc());
+        library.set("text", new TextFunc());
         env.set(libname,library);
         env.get("package").get("loaded").set(libname,library);
         return library;
@@ -71,6 +77,28 @@ public class ScriptMcLib extends TwoArgFunction{
             }.runTask(instance);
 
             return LuaValue.valueOf("success");
+        }
+    }
+
+    public class ColorFunc extends OneArgFunction{
+        @Override
+        public LuaValue call(LuaValue arg){
+            String name = arg.checkjstring();
+            for(ChatColor color: ChatColor.class.getEnumConstants()){
+                if(name.equalsIgnoreCase(color.getName())){
+                    return CoerceJavaToLua.coerce(color);
+                }
+            }
+            return LuaValue.NIL;
+        }
+    }
+
+    public class TextFunc extends OneArgFunction{
+        @Override
+        public LuaValue call(LuaValue arg){
+            String str = arg.checkjstring();
+            TextBuilder now = TextBuilder.of(str);
+            return CoerceJavaToLua.coerce(now);
         }
     }
 }
