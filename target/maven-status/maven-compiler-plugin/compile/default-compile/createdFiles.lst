@@ -10,7 +10,6 @@ cxmc\cmd\BindScriptExecutor.class
 cxmc\cmd\ClearPosExecutor.class
 cxmc\lua\ScriptMcLib.class
 cxmc\cmd\GetModeExecutor.class
-cxmc\lua\LuaPermHandler.class
 cxmc\text\TextBuilder.class
 cxmc\config\ConfigLoader.class
 cxmc\lua\ScriptMcLib$TextFunc.class

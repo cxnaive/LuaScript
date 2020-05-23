@@ -19,8 +19,8 @@ d:\projects\LuaScript\src\main\java\cxmc\lua\ScriptPlayer.java
 d:\projects\LuaScript\src\main\java\cxmc\cmd\GetModeExecutor.java
 d:\projects\LuaScript\src\main\java\cxmc\cmd\ListRunningExecutor.java
 d:\projects\LuaScript\src\main\java\cxmc\config\ConfigLoader.java
+d:\projects\LuaScript\src\main\java\cxmc\lua\LuaPermEconHandler.java
 d:\projects\LuaScript\src\main\java\cxmc\cmd\ClearPosExecutor.java
-d:\projects\LuaScript\src\main\java\cxmc\lua\LuaPermHandler.java
 d:\projects\LuaScript\src\main\java\cxmc\lua\LuaRunner.java
 d:\projects\LuaScript\src\main\java\cxmc\cmd\CommandLoader.java
 d:\projects\LuaScript\src\main\java\cxmc\extra\Defs.java

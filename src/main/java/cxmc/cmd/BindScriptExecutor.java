@@ -1,6 +1,8 @@
 package cxmc.cmd;
 
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -15,6 +17,13 @@ public class BindScriptExecutor extends LuaScriptExecutor {
     public BindScriptExecutor(LuaScript instance){
         this.instance = instance;
     }
+    @Override
+    public List<String> LeafTabComplete(CommandSender sender,Queue<String> args){
+        List<String> coms = new ArrayList<>();
+        coms.addAll(instance.getLuaLoader().GetScriptIDALL());
+        return coms;
+    }
+    
     @Override
     public boolean RunAsLeaf(CommandSender sender, String[] args) {
         if(!(sender instanceof Player)){

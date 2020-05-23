@@ -1,5 +1,8 @@
 package cxmc.lua;
+
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import cxmc.LuaScript;
@@ -18,7 +21,7 @@ public class ScriptPlayer {
     public String getName(){
         return player.getName();
     }
-    public void runcmd(String cmd){
+    public void runCmd(String cmd){
         new BukkitRunnable(){
             @Override
             public void run() {
@@ -51,18 +54,33 @@ public class ScriptPlayer {
         return player.isSprinting();
     }
     public boolean hasPermission(String perm){
-        return instance.getluaPermHandler().HasPermission(player, perm);
+        return instance.getluaPermEconHandler().HasPermission(player, perm);
     }
-    public boolean InGroup(String group){
-        return instance.getluaPermHandler().InGroup(player, group);
+    public boolean inGroup(String group){
+        return instance.getluaPermEconHandler().InGroup(player, group);
     }
-    public void AddPermission(String perm){
-        instance.getluaPermHandler().addPermission(player, perm);
+    public void addPermission(String perm){
+        instance.getluaPermEconHandler().addPermission(player, perm);
     }
-    public void RemovePermission(String perm){
-        instance.getluaPermHandler().removePermisson(player, perm);
+    public void removePermission(String perm){
+        instance.getluaPermEconHandler().removePermisson(player, perm);
     }
-    public void sendmessage(Object value){
+    public void deposit(double amount){
+        instance.getluaPermEconHandler().depositPlayer(player, amount);
+    }
+    public void cost(double amount){
+        instance.getluaPermEconHandler().withdrawPlayer(player, amount);
+    }
+    public PlayerInventory getInventory(){
+        return player.getInventory();
+    }
+    public Inventory getEnderChest(){
+        return player.getEnderChest();
+    }
+    public double getBalance(){
+        return instance.getluaPermEconHandler().getBalance(player);
+    }
+    public void sendMessage(Object value){
         TextBuilder msg = (TextBuilder)value;
         player.spigot().sendMessage(msg.build());
     }

@@ -25,7 +25,7 @@ public class LuaScript extends JavaPlugin {
     private Economy Veconomy;
     private Permission Vpermission;
     private LuckPerms luckPerms;
-    private LuaPermHandler luaPermHandler;
+    private LuaPermEconHandler luaPermHandler;
     private PluginStat pluginStat;
     private IDgenerator idgenerator;
     private CheckPosTask checkPosTask;
@@ -62,7 +62,7 @@ public class LuaScript extends JavaPlugin {
             pluginStat.isVpermEnabled = false;
         }
         configLoader.apply();
-        luaPermHandler = new LuaPermHandler(this);
+        luaPermHandler = new LuaPermEconHandler(this);
         getServer().getPluginManager().registerEvents(new EventLoader(this), this);
         idgenerator = new IDgenerator();
         checkPosTask = new CheckPosTask(this);
@@ -142,7 +142,7 @@ public class LuaScript extends JavaPlugin {
     public LuckPerms getlLuckPerms(){
         return luckPerms;
     }
-    public LuaPermHandler getluaPermHandler(){
+    public LuaPermEconHandler getluaPermEconHandler(){
         return luaPermHandler;
     }
     public PluginStat getPluginStat(){
