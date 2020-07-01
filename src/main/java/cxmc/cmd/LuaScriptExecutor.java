@@ -16,8 +16,10 @@ public abstract class LuaScriptExecutor{
     String permission;
 
     public static final TextComponent PlayerErr = TextBuilder.of("You need to specify an online player!").setColor(ChatColor.RED).build();
-    public static final TextComponent ArgNumErr = TextBuilder.of("Invalid argument number.").setColor(ChatColor.RED).build();
+    public static final TextComponent PlayerCmd = TextBuilder.of("This command can only be executed by a player!").setColor(ChatColor.RED).build();
+    public static final TextComponent ArgNumErr = TextBuilder.of("Invalid argument number!").setColor(ChatColor.RED).build();
     public static final TextComponent Success = TextBuilder.of("Success!").setColor(ChatColor.GREEN).build();
+
     public LuaScriptExecutor(){
         SubCommands = new HashMap<>();
         TabCompleteStrings = new ArrayList<>();

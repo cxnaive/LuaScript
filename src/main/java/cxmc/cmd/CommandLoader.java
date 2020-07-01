@@ -40,7 +40,8 @@ public class CommandLoader {
         ListPosExecutor listPosExecutor = new ListPosExecutor(instance);
         listPosExecutor.SetPermission("luascript.pos.list");
 
-        
+        SetAreaExecutor setAreaExecutor = new SetAreaExecutor(instance);
+        setAreaExecutor.SetPermission("luascript.area.set");
 
         RootExecutor RootCMD = new RootExecutor(instance);
         RootCMD.SetPermission("luascript.info");
@@ -56,6 +57,7 @@ public class CommandLoader {
         RootCMD.RegisterSubcommand("killrunning", killRunningExecutor);
         RootCMD.RegisterSubcommand("clearpos", clearPosExecutor);
         RootCMD.RegisterSubcommand("clearworld", clearWorldExecutor);
+        RootCMD.RegisterSubcommand("setarea", setAreaExecutor);
 
         instance.getCommand("luascript").setExecutor(RootCMD);
         instance.getCommand("luascript").setTabCompleter(RootCMD);

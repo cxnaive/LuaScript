@@ -13,7 +13,7 @@ import org.luaj.vm2.Globals;
 import org.luaj.vm2.lib.jse.JsePlatform;
 
 public class LuaLoader {
-    
+    public static final String NullScript = "LUASCRIPT:NULL_SCRIPT";
     private LuaScript instance;
     HashMap<String,Globals> StoredScripts;
     HashMap<String,HashMap<String,Object>> StoredVars;
@@ -127,6 +127,9 @@ public class LuaLoader {
     }
     public List<Pair<String,String>> GetAreaALL(){
         return instance.getH2Manager().GetAreaALL();
+    }
+    public List<Pair<String,String>> GetAreaByPoss(ScriptPos pos){
+        return instance.getH2Manager().GetAreaByPos(pos);
     }
     public List<Pair<ScriptPos,String>> GetPosALL(){
         return instance.getH2Manager().GetPosALL();

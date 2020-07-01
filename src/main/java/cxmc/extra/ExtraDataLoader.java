@@ -11,10 +11,12 @@ public class ExtraDataLoader {
     public HashMap<UUID,PlayerMode> StoredPlayerMode;
     public HashMap<UUID,String> BindedScriptID;
     public HashMap<UUID,ScriptPos> StoredPlayerPoses;
+    public HashMap<UUID,SelectArea> StoredPlayerAreas;
     public ExtraDataLoader(){
         StoredPlayerMode = new HashMap<>();
         BindedScriptID = new HashMap<>();
         StoredPlayerPoses = new HashMap<>();
+        StoredPlayerAreas = new HashMap<>();
     }
     public PlayerMode getPlayerMode(Player player){
         PlayerMode mode = StoredPlayerMode.get(player.getUniqueId());
@@ -37,5 +39,13 @@ public class ExtraDataLoader {
     }
     public void setPlayerPos(Player player,ScriptPos pos){
         StoredPlayerPoses.put(player.getUniqueId(), pos);
+    }
+    public SelectArea getPlayerArea(Player player){
+        SelectArea area = StoredPlayerAreas.get(player.getUniqueId());
+        if(area == null) area = new SelectArea();
+        return area;
+    }
+    public void SetPlayerArea(Player player,SelectArea area){
+        StoredPlayerAreas.put(player.getUniqueId(), area);
     }
 }

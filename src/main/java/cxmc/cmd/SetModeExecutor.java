@@ -25,6 +25,7 @@ public class SetModeExecutor extends LuaScriptExecutor {
         coms.add(PlayerMode.ViewMode.name());
         coms.add(PlayerMode.SetMode.name());
         coms.add(PlayerMode.DelMode.name());
+        coms.add(PlayerMode.AreaMode.name());
         return coms;
     }
     @Override

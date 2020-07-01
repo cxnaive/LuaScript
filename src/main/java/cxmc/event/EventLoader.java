@@ -2,6 +2,7 @@ package cxmc.event;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -20,9 +21,11 @@ import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
 import cxmc.LuaScript;
+import cxmc.essentials.Pair;
 import cxmc.essentials.ScriptPos;
 import cxmc.extra.Defs;
 import cxmc.extra.PlayerMode;
+import cxmc.extra.SelectArea;
 import cxmc.lua.LuaLoader;
 import cxmc.lua.ScriptPlayer;
 import cxmc.text.TextBuilder;
@@ -103,10 +106,17 @@ public class EventLoader implements Listener {
                     break;
                 case ViewMode:
                     ScriptID = loader.GetPosSID(pos);
+                    List<Pair<String,String>> areas = loader.GetAreaByPoss(pos);
                     if(ScriptID != null){
                         player.spigot().sendMessage(TextBuilder.of("ScriptID: ").setColor(ChatColor.AQUA).append(TextBuilder.of(ScriptID).setColor(ChatColor.YELLOW).build()).build());
                     }
-                    else player.spigot().sendMessage(TextBuilder.of("No script on this block.").setColor(ChatColor.AQUA).build());
+                    if(!areas.isEmpty()){
+                        for(Pair<String,String> area:areas){
+                            player.spigot().sendMessage(TextBuilder.of(area.getKey()+": ").setColor(ChatColor.AQUA).append(TextBuilder.of(area.getValue()).setColor(ChatColor.YELLOW).build()).build());   
+                        }
+                        player.spigot().sendMessage(TextBuilder.of(""+areas.size()).setColor(ChatColor.GREEN).append(TextBuilder.of(" areas in total.").setColor(ChatColor.AQUA).build()).build());
+                    }
+                    if(ScriptID == null && areas.isEmpty()) player.spigot().sendMessage(TextBuilder.of("No script on this block.").setColor(ChatColor.AQUA).build());
                     break;
                 case DelMode:
                     if(instance.getH2Manager().HasPos(pos)){
@@ -128,10 +138,25 @@ public class EventLoader implements Listener {
                     loader.SetPos(pos, ScriptID, new HashMap<>());
                     player.spigot().sendMessage(TextBuilder.of("Successfully set ScriptID.").setColor(ChatColor.AQUA).build());
                     break;
+                case AreaMode:
+                    SelectArea area = instance.getExtraDataLoader().getPlayerArea(player);
+                    if(area.state == 0 || area.state == 2){
+                        area.a = pos;
+                        area.state = 1;
+                        instance.getExtraDataLoader().SetPlayerArea(player, area);
+                        player.spigot().sendMessage(TextBuilder.of("First "+pos.toString()).setColor(ChatColor.AQUA).build());
+                    }
+                    else if(area.state == 1){
+                        area.b = pos;
+                        area.state = 2;
+                        instance.getExtraDataLoader().SetPlayerArea(player, area);
+                        player.spigot().sendMessage(TextBuilder.of("Second "+pos.toString()).setColor(ChatColor.AQUA).build());
+                    }
                 default:
                     player.spigot().sendMessage(TextBuilder.of("Invalid palyer mode.").setColor(ChatColor.RED).build());
                     break;
             }
         }
     }
+    
 }

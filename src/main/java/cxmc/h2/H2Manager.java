@@ -44,7 +44,7 @@ public class H2Manager {
     private PreparedStatement HAS_POS,HAS_AREA,HAS_SID;
     private PreparedStatement GET_POS_SCRIPT,GET_POS_SID,GET_AREA_SID,GET_AREA_SCRIPT,
                             GET_POS_VARS,GET_AREA_VARS,GET_AREA_AABB,GET_POS_BY_SID,GET_AREA_BY_SID,
-                            GET_POS_ALL,GET_AREA_ALL,GET_SID_ALL,GET_SCRIPT_BY_SID,GET_POS_BY_WLD;
+                            GET_POS_ALL,GET_AREA_ALL,GET_SID_ALL,GET_SCRIPT_BY_SID,GET_POS_BY_WLD,GET_AREA_BY_POS;
     private PreparedStatement UPD_SCRIPT,UPD_POS_VAR,UPD_AREA_VAR,UPD_POS,UPD_AREA;
     private PreparedStatement DEL_SCRIPT,DEL_POS,DEL_AREA;
     private PreparedStatement CLS_POS,CLS_AREA,CLS_SCRIPT,CLS_WORLD;
@@ -96,6 +96,7 @@ public class H2Manager {
             GET_AREA_ALL = conn.prepareStatement("SELECT ID,SID FROM "+AREA_STRING);
             GET_SID_ALL = conn.prepareStatement("SELECT SID FROM "+SCRIPT_STRING);
             GET_SCRIPT_BY_SID = conn.prepareStatement("SELECT CONTENT FROM "+SCRIPT_STRING+" WHERE SID = ?");
+            GET_AREA_BY_POS = conn.prepareStatement("SELECT ID,SID FROM "+AREA_STRING+" WHERE X1 <= ? AND ? <= X2 AND Y1 <= ? AND ? <= Y2 AND Z1 <= ? AND ? <= Z2 AND WORLD = ?");
 
             UPD_SCRIPT = conn.prepareStatement("UPDATE " + SCRIPT_STRING + " SET CONTENT = ? WHERE SID = ?");
             UPD_POS_VAR = conn.prepareStatement(
@@ -112,7 +113,7 @@ public class H2Manager {
             CLS_AREA = conn.prepareStatement("DELETE FROM "+AREA_STRING);
             CLS_POS = conn.prepareStatement("DELETE FROM "+POS_STRING);
             CLS_SCRIPT = conn.prepareStatement("DELETE FROM "+SCRIPT_STRING);
-            CLS_WORLD = conn.prepareStatement("DELETE FROM " + POS_STRING + " WHERE WORLD = ?");
+            CLS_WORLD = conn.prepareStatement("DELETE FROM " +POS_STRING+ " WHERE WORLD = ?");
             return true;
         } catch (final Exception ex) {
             ex.printStackTrace();
@@ -516,6 +517,29 @@ public class H2Manager {
     public List<Pair<String,String>> GetAreaALL(){
         try{
             ResultSet result = GET_AREA_ALL.executeQuery();
+            List<Pair<String,String>> now = new ArrayList<>();
+            while(result.next()){
+                now.add(new Pair<String,String>(result.getString(1),result.getString(2)));
+            }
+            return now;
+        } catch (Exception ex){
+            if(instance.getPluginStat().isDebugMode){
+                ex.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    public List<Pair<String,String>> GetAreaByPos(ScriptPos pos){
+        try{
+            GET_AREA_BY_POS.setInt(1, pos.x);
+            GET_AREA_BY_POS.setInt(2, pos.x);
+            GET_AREA_BY_POS.setInt(3, pos.y);
+            GET_AREA_BY_POS.setInt(4, pos.y);
+            GET_AREA_BY_POS.setInt(5, pos.z);
+            GET_AREA_BY_POS.setInt(6, pos.z);
+            GET_AREA_BY_POS.setString(7, pos.world.getUID().toString());
+            ResultSet result = GET_AREA_BY_POS.executeQuery();
             List<Pair<String,String>> now = new ArrayList<>();
             while(result.next()){
                 now.add(new Pair<String,String>(result.getString(1),result.getString(2)));

@@ -2,7 +2,7 @@ main: cxmc.LuaScript
 name: LuaScript
 version: 1.0
 author: cx
-website: cxspace.org
+website: cxmiao.zone
 api-version: 1.15
 softdepend: [Vault,LuckPerms]
 commands:
@@ -72,6 +72,14 @@ permissions:
       children:
          luascript.pos.kill: true
          luascript.pos.list: true
+   luascript.area.set:
+      description: Allows player to set areas
+      default: op
+   luascript.area.*:
+      description: Wildcard permission for script-area operations
+      default: op
+      children:
+         luascript.area.set: true
    luascript.*:
       description: Wildcard permission
       default: op
@@ -81,3 +89,4 @@ permissions:
          luascript.stat.*: true
          luascript.script.*: true
          luascript.running.*: true
+         luascript.area.*: true

@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import cxmc.LuaScript;
+import cxmc.extra.PlayerMode;
 import cxmc.text.TextBuilder;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -45,7 +46,7 @@ public class GetModeExecutor extends LuaScriptExecutor {
             return false;
         }
         TextComponent msg = instance.getExtraDataLoader().getPlayerMode(player).getText();
-        if(msg.toPlainText().equalsIgnoreCase("setmode")){
+        if(msg.toPlainText().equalsIgnoreCase(PlayerMode.SetMode.name())){
             msg.setUnderlined(true);
             String ScriptID = instance.getExtraDataLoader().getBindedScriptID(player);
             if(ScriptID == null) ScriptID = "NULL";

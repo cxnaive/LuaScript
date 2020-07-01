@@ -19,6 +19,12 @@ public class ScriptPos {
         this.z = block.getZ();
         this.world = block.getWorld();
     }
+    public ScriptPos getmin(ScriptPos other){
+        return new ScriptPos(Math.min(this.x, other.x),Math.min(this.y, other.y),Math.min(this.z, other.z),this.world);
+    }
+    public ScriptPos getmax(ScriptPos other){
+        return new ScriptPos(Math.max(this.x, other.x),Math.max(this.y, other.y),Math.max(this.z, other.z),this.world);
+    }
     @Override
     public String toString(){
         return "P:"+this.x+","+this.y+","+this.z+","+world.getName();
